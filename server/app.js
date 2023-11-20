@@ -1,14 +1,18 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+// Routes Import
+const authRoutes = require("./routes/auth");
 
-const post = 3000;
+const port = 4000;
 
 // json
 app.use(express.json());
 
 // cors
 app.use(cors());
+
+app.use("/api/auth", authRoutes);
 
 // routes
 app.get("/", (req, res) => {
