@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import Page from "src/components/ui/page.jsx";
 import { Input } from "src/components/ui/Input.jsx";
 export default function SignUp() {
   const [step, setStep] = useState(1);
@@ -11,9 +12,11 @@ export default function SignUp() {
   });
 
   return (
-    <div className="flex justify-center items-center">
-      <div className="dark:bg-white">
-        <h1 className="text-4xl font-semibold dark:text-black">Sign Up</h1>
+    <Page className="">
+      <div className="dark:bg-white p-10 rounded-lg">
+        <h1 className="text-3xl font-semibold dark:text-black text-center mb-3">
+          Sign Up
+        </h1>
         <form>
           {/* <fieldset>
           <label htmlFor="email">Email</label>
@@ -25,9 +28,7 @@ export default function SignUp() {
         </fieldset> */}
           {step == 1 && (
             <fieldset>
-              <h3 className="text-2xl text-black">
-                Let's start with your name
-              </h3>
+              <h3 className="text-xl text-black">Let's start with your name</h3>
               <Input
                 value={fields.firstName}
                 name="firstName"
@@ -44,6 +45,6 @@ export default function SignUp() {
           )}
         </form>
       </div>
-    </div>
+    </Page>
   );
 }
