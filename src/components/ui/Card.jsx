@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Card({
+export function Card({
   className = "",
   row = false,
   children,

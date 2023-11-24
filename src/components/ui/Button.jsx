@@ -2,9 +2,12 @@ import React from "react";
 
 export default function Button({
   className = "",
+  type = "button",
   onClick = () => {},
+  padding = "px-5 py-3",
   variant = "primary",
   children,
+  ...props
 }) {
   const variants = {
     primary: "bg-indigo-500 hover:bg-indigo-600 text-white",
@@ -17,7 +20,12 @@ export default function Button({
     dark: "bg-gray-800 hover:bg-gray-900 text-white",
   };
   return (
-    <button className={` ${variants[variant]} ${className}`} onClick={onClick}>
+    <button
+      type={type}
+      className={`${padding} ${variants[variant]} ${className}`}
+      onClick={onClick}
+      {...props}
+    >
       {children}
     </button>
   );
