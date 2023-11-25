@@ -7,6 +7,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import axios from "axios";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const schema = yup.object().shape({
   email: yup.string().email("Email is invalid").required("Email is required"),
@@ -16,6 +18,7 @@ const schema = yup.object().shape({
     .min(6, "Password must be atleast 6 characters long"),
 });
 export default function SignIn() {
+  const router = useRouter();
   const [visible, setVisible] = useState(false);
   const {
     register,
@@ -36,7 +39,8 @@ export default function SignIn() {
     axios
       .post(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/auth/signin`, fieldData)
       .then((res) => {
-        console.log("res:", res);
+        toast.success(res.data.message);
+        router.replace("/dashboard");
       })
       .catch((err) => {
         console.log("err:", err);

@@ -44,9 +44,8 @@ userSchema.virtual("password").set(function (password) {
 userSchema.methods.encryptPassword = async function (password) {
   return await bcrypt.hash(password, this.salt);
 };
-userSchema.methods.authenticate = async function (password) {
-  this._password = this.encryptPassword(password, this.salt);
-  return await bcrypt.compare(this._password, this.hashedPassword);
+userSchema.methods.authenticate = function (password) {
+  return bcrypt.compareSync(password, this.hashedPassword);
 };
 
 userSchema.pre("save", async function (next) {
