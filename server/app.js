@@ -4,10 +4,14 @@ const app = express();
 const cors = require("cors");
 const session = require("express-session");
 const passport = require("./utils/passport");
+const connectDB = require("./utils/db");
 // Routes Import
 const authRoutes = require("./routes/auth");
 
 const port = process.env.SERVER_PORT || 4000;
+
+// connect to db
+connectDB();
 
 // session
 app.use(

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/Card";
 import { Page } from "@/components/ui/page";
 import toast from "react-hot-toast";
@@ -24,9 +25,12 @@ const schema = yup.object().shape({
 });
 
 export default function SignUp() {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -41,7 +45,7 @@ export default function SignUp() {
     console.log("errors:", errors);
   }, [errors]);
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log("data:", data);
     const fieldData = {
       firstName: data.firstName,
@@ -50,15 +54,21 @@ export default function SignUp() {
       password: data.password,
     };
 
-    axios
+    await axios
       .post(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/auth/signup`, fieldData)
       .then((res) => {
         console.log("res:", res);
         toast.success("Sign Up Successful");
+        router.replace("/auth/signin");
       })
       .catch((err) => {
-        console.log("err:", err);
-        toast.error(err.response.data.message);
+        console.log("err:", err.response.data.errors[0]);
+        let error = err.response.data.errors[0];
+        setError(error.field, {
+          type: "custom",
+          message: error.message,
+        });
+        toast.error("Error Signing Up");
       });
   };
 

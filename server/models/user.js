@@ -25,48 +25,44 @@ const userSchema = new Schema(
     },
     salt: {
       type: String,
-      required: true,
     },
     hashedPassword: {
       type: String,
-      required: true,
     },
   },
   { timestamps: true }
 );
 
-userSchema.virtual("fullname").get(() => {
+userSchema.virtual("fullname").get(function () {
   return `${this.firstName} ${this.lastName}`;
 });
 
-userSchema.virtual("password").set((password) => {
+userSchema.virtual("password").set(function (password) {
   this._password = password;
 });
 
-userSchema.pre("save", async (next) => {
+userSchema.methods.encryptPassword = async function (password) {
+  return await bcrypt.hash(password, this.salt);
+};
+userSchema.methods.authenticate = async function (password) {
+  this._password = this.encryptPassword(password, this.salt);
+  return await bcrypt.compare(this._password, this.hashedPassword);
+};
+
+userSchema.pre("save", async function (next) {
   if (!this._password) {
     return next();
   }
 
   try {
     this.salt = await bcrypt.genSalt(10);
-    this.hashedPassword = await this.encryptPassword(this._password, this.salt);
+    this.hashedPassword = await this.encryptPassword(this._password);
   } catch (error) {
     return next(error);
   }
 
   next();
 });
-
-userSchema.methods = {
-  authenticate: async (password) => {
-    this._password = this.encryptPassword(password, this.salt);
-    return await bcrypt.compare(this._password, this.hashedPassword);
-  },
-  encryptPassword: async (password, salt) => {
-    return await bcrypt.hash(password, salt);
-  },
-};
 
 const User = mongoose.model("User", userSchema);
 
